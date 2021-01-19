@@ -1,0 +1,4 @@
+[package]
+name = "example"
+authors = [ "Joe Doe <joedoe@gmail.com>",]
+keywords = [ "crate", "example",]
