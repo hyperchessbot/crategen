@@ -1,6 +1,6 @@
 [[bin]]
-name = "example"
-path = "src/example.rs"
+name = "usage"
+path = "src/usage.rs"
 
 [package]
 name = "example"

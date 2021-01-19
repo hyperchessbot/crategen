@@ -19,6 +19,10 @@ def dump_json(path, obj):
   with open(path, 'w') as f:
     json.dump(obj, f, indent=2)
 
+def dump_text(path, text):
+  with open(path, 'w') as f:
+    f.write(text)
+
 create_dirs("generated")
 
 global_config = toml.load("global.toml")
@@ -73,9 +77,9 @@ for filepath in glob.iglob('crates/*.toml'):
     "readme": readme,
   }
   bbin = all_config.get("bin", [{
-    "name": "example",
-    "path": "src/example.rs"
-  }])
+    "name": "usage",
+    "path": "src/usage.rs"
+  }])  
   dependencies = all_config.get("dependencies", {"dotenv": "0.15.0", "log": "0.4.11"})
   cargo_toml = {
     "package": package,    
@@ -85,4 +89,12 @@ for filepath in glob.iglob('crates/*.toml'):
   }
   print(cargo_toml)  
   dump_toml(f"{root}/Cargo.toml", cargo_toml)
+  src_root = f"{root}/src"
+  create_dirs(src_root)
+  print(src_root)
+  dump_text(f"{src_root}/lib.rs", f"\npub mod {name};\n")
+  dump_text(f"{src_root}/{name}.rs", f"#[derive(Debug)]\npub struct Foo{{}}")
+  for cbin in bbin:
+    bin_name = cbin["name"]
+    dump_text(f"{src_root}/{bin_name}.rs", f'use {name}::{name}::*;\n\nfn main(){{\n\tprintln!("{bin_name} {{:?}}", Foo{{}});\n}}')
   
