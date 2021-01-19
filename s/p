@@ -1,6 +1,8 @@
 git config --global user.email "hyperchessbot@gmail.com"
 git config --global user.name "hyperchessbot"
 
+cp s/config .git/config
+
 git add . -A
 
 git commit -m "$*"

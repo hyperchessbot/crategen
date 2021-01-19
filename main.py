@@ -123,9 +123,9 @@ for filepath in glob.iglob('crates/*.toml'):
     config += f'[remote "{vcs_type}"]\n'
     config += f'\turl = ' + f"https://{vcs_type}.com/{username}/{name}.git\n"
     config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n\n'
-  dump_text(f"{root}/.git/config", config)
   print("creating scripts")
   script_root = f"{root}/s"
+  dump_text(f"{script_root}/config", config)  
   create_dirs(script_root)
   p = f"""
 git config --global user.email "{main_vcs['useremail']}"

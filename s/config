@@ -1,0 +1,13 @@
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+
+[remote "github"]
+    url = https://github.com/hyperchessbot/crategen.git
+    fetch = +refs/heads/*:refs/remotes/github/*
+    
+[remote "gitlab"]
+    url = https://gitlab.com/hyperchessbotauthor/crategen.git
+    fetch = +refs/heads/*:refs/remotes/gitlab/*

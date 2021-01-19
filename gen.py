@@ -29,3 +29,6 @@ export RUST_LOG=info
 export RUST_LOG=debug
 ```"""
 dump_text("ReadMe.md", readme)
+
+gitconfig = read_text("s/config")
+dump_text(".git/config", gitconfig)
