@@ -116,3 +116,22 @@ for filepath in glob.iglob('crates/*.toml'):
     config += f'\turl = ' + f"https://{vcs_type}.com/{username}/{name}.git\n"
     config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n'
   dump_text(f"{root}/.git/config", config)
+  print("creating scripts")
+  script_root = f"{root}/s"
+  create_dirs(script_root)
+  p = f"""
+git config --global user.email "{main_vcs['useremail']}"
+git config --global user.name "{main_vcs['username']}"
+
+git checkout -b master
+
+git add . -A
+
+git commit -m "$*"
+
+"""
+  for vcs in vcss:
+    p = p + f"git push {vcs['type']} master\n\n"
+  dump_text(f"{script_root}/p", p)
+  p = subprocess.Popen(["chmod", "+x", f"p"], cwd=script_root)
+  p.wait()

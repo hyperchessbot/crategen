@@ -1,0 +1,12 @@
+
+git config --global user.email "joedoe@gmail.com"
+git config --global user.name "joedoe"
+
+git checkout -b master
+
+git add . -A
+
+git commit -m "$*"
+
+git push github master
+
