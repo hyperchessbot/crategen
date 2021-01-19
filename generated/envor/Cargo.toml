@@ -1,0 +1,28 @@
+[[bin]]
+name = "usage"
+path = "src/usage.rs"
+
+[[bin]]
+name = "advanced"
+path = "src/advanced.rs"
+
+[package]
+name = "envor"
+version = "0.1.0"
+authors = [ "hyperchessbot <hyperchessbot@gmail.com>",]
+edition = "2018"
+keywords = [ "env", "var", "typed", "default",]
+description = "Get env vars to types with default."
+license = "MIT"
+repository = "https://github.com/hyperchessbot/envor"
+homepage = "https://github.com/hyperchessbot/envor#envor"
+documentation = "https://docs.rs/envor/0.1.0"
+readme = "ReadMe.md"
+
+[dependencies]
+dotenv = "0.15.0"
+log = "0.4.11"
+env_logger = "0.8.2"
+
+[lib]
+path = "src/lib.rs"

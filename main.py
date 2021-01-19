@@ -11,9 +11,11 @@ def create_dirs(path):
   try:
     os.makedirs(path)
   except OSError:
-      print(f"failed to create {path}")
+      # print(f"failed to create {path}")
+      pass
   else:
-      print(f"created {path}")
+      # print(f"created {path}")
+      pass
 
 def dump_toml(path, obj):
   with open(path, 'w') as f:
@@ -35,18 +37,12 @@ create_dirs("generated")
 
 global_config = toml.load("global.toml")
 
-print(global_config)
-
-for filepath in glob.iglob('crates/*.toml'):
-  print(filepath)
-  crate_config = toml.load(filepath)
-  print(crate_config)
-  all_config = {**global_config, **crate_config}
-  print(all_config)
+for filepath in glob.iglob('crates/*.toml'):  
+  crate_config = toml.load(filepath)  
+  all_config = {**global_config, **crate_config}  
   name = filepath.split("/")[1].split(".toml")[0]
-  print(name)
-  root = f"generated/{name}"
-  print(root)
+  print("generating", name)
+  root = f"generated/{name}"  
   create_dirs(root)
   authors = all_config.get("author", [{
     "name": "Joe Doe",
@@ -87,29 +83,24 @@ for filepath in glob.iglob('crates/*.toml'):
   bbin = all_config.get("bin", [{"name": "usage"}, {"name": "advanced"}])  
   for cbin in bbin:
     cbin["title"] = cbin.get("title", string.capwords(cbin['name']))
-    cbin["path"] = cbin.get("path", f"src/{cbin['name']}.rs")
-  print("bbin", bbin)
+    cbin["path"] = cbin.get("path", f"src/{cbin['name']}.rs")  
   dependencies = all_config.get("dependencies", {"dotenv": "0.15.0", "log": "0.4.11", "env_logger": "0.8.2"})
   cargo_toml = {
     "package": package,    
     "dependencies": dependencies,
     "bin": [{"name": cbin["name"], "path": cbin["path"]} for cbin in bbin],
     "lib": {"path": "src/lib.rs"}
-  }
-  print(cargo_toml)  
+  }  
   dump_toml(f"{root}/Cargo.toml", cargo_toml)
   src_root = f"{root}/src"
-  create_dirs(src_root)
-  print(src_root)
+  create_dirs(src_root)  
   dump_text(f"{src_root}/lib.rs", f"\n// lib\n\npub mod {name};\n")
   dump_text(f"{src_root}/{name}.rs", f"#[derive(Debug)]\npub struct Foo{{}}")
   for cbin in bbin:
     bin_name = cbin["name"]
     dump_text(f"{src_root}/{bin_name}.rs", f'use {name}::{name}::*;\n\nfn main(){{\n\tprintln!("{bin_name} {{:?}}", Foo{{}});\n}}\n')
-  print("creating git")
   p = subprocess.Popen(["git", "init"], cwd=root)
-  p.wait()
-  print("creating git done")
+  p.wait()  
   config = """[core]
   repositoryformatversion = 0
   filemode = true
@@ -122,11 +113,11 @@ for filepath in glob.iglob('crates/*.toml'):
     username = vcs["username"]
     config += f'[remote "{vcs_type}"]\n'
     config += f'\turl = ' + f"https://{vcs_type}.com/{username}/{name}.git\n"
-    config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n\n'
-  print("creating scripts")
+    config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n\n'  
   script_root = f"{root}/s"
+  create_dirs(script_root)  
   dump_text(f"{script_root}/config", config)  
-  create_dirs(script_root)
+  
   p = f"""
 git config --global user.email "{main_vcs['useremail']}"
 git config --global user.name "{main_vcs['username']}"
@@ -143,8 +134,7 @@ git commit -m "$*"
   p = "python s/gen.py\n\n" + p
   dump_text(f"{script_root}/p", p)
   p = subprocess.Popen(["chmod", "+x", f"p"], cwd=script_root)
-  p.wait()
-  print("copying license")
+  p.wait()  
   copyfile(f"licenses/{license}", f"{root}/LICENSE")
   if license == "MIT":
     mit = read_text("licenses/MIT")
@@ -152,10 +142,10 @@ git commit -m "$*"
     mit = f"Copyright {datetime.datetime.now().year} {cr}\n" + mit
     dump_text(f"{root}/LICENSE", mit)
   badges = f"[![documentation](https://docs.rs/{name}/badge.svg)](https://docs.rs/{name}) [![Crates.io](https://img.shields.io/crates/v/{name}.svg)](https://crates.io/crates/{name}) [![Crates.io (recent)](https://img.shields.io/crates/dr/{name})](https://crates.io/crates/{name})\n\n"
-  readmemd = badges + f"# {name}\n\n{description}"
-  print("writing readme")
+  readmemd = badges + f"# {name}\n\n{description}"  
   dump_text(f"{root}/ReadMe.md", readmemd)
   dump_text(f"{script_root}/ReadMe.md", readmemd)
   cargo_toml["bin"] = bbin
   conf_json = json.dumps(cargo_toml, indent=2)
   dump_text(f"{script_root}/gen.py", f"config = {conf_json}\n\n" + read_text("gen.py"))
+  print("done", name)
