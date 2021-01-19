@@ -2,6 +2,7 @@ import toml
 import glob
 import os
 import json
+import subprocess
 
 def create_dirs(path):
   try:
@@ -97,4 +98,21 @@ for filepath in glob.iglob('crates/*.toml'):
   for cbin in bbin:
     bin_name = cbin["name"]
     dump_text(f"{src_root}/{bin_name}.rs", f'use {name}::{name}::*;\n\nfn main(){{\n\tprintln!("{bin_name} {{:?}}", Foo{{}});\n}}')
-  
+  print("creating git")
+  p = subprocess.Popen(["git", "init"], cwd=root)
+  p.wait()
+  print("creating git done")
+  config = """[core]
+  repositoryformatversion = 0
+  filemode = true
+  bare = false
+  logallrefupdates = true
+
+"""
+  for vcs in vcss:
+    vcs_type = vcs["type"]
+    username = vcs["username"]
+    config += f'[remote "{vcs_type}"]\n'
+    config += f'\turl = ' + f"https://{vcs_type}.com/{username}/{name}.git\n"
+    config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n'
+  dump_text(f"{root}/.git/config", config)
