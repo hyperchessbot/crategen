@@ -1,0 +1,10 @@
+[[author]]
+name = "Joe Doe"
+email = "joedoe@gmail.com"
+
+[[vcs]]
+type = "github"
+username = "joedoegit"
+useremail = "joedoe@gmail.com"
+
+license = "MIT"
