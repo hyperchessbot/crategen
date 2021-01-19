@@ -3,6 +3,7 @@ import glob
 import os
 import json
 import subprocess
+from shutil import copyfile
 
 def create_dirs(path):
   try:
@@ -114,7 +115,7 @@ for filepath in glob.iglob('crates/*.toml'):
     username = vcs["username"]
     config += f'[remote "{vcs_type}"]\n'
     config += f'\turl = ' + f"https://{vcs_type}.com/{username}/{name}.git\n"
-    config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n'
+    config += f'\tfetch = +refs/heads/*:refs/remotes/{vcs_type}/*\n\n'
   dump_text(f"{root}/.git/config", config)
   print("creating scripts")
   script_root = f"{root}/s"
@@ -135,3 +136,9 @@ git commit -m "$*"
   dump_text(f"{script_root}/p", p)
   p = subprocess.Popen(["chmod", "+x", f"p"], cwd=script_root)
   p.wait()
+  print("copying license")
+  copyfile(f"licenses/{license}", f"{root}/LICENSE")
+  badges = f"[![documentation](https://docs.rs/{name}/badge.svg)](https://docs.rs/{name}) [![Crates.io](https://img.shields.io/crates/v/{name}.svg)](https://crates.io/crates/{name}) [![Crates.io (recent)](https://img.shields.io/crates/dr/{name})](https://crates.io/crates/{name})\n\n"
+  readmemd = badges + f"# {name}\n{name}"
+  print("writing readme")
+  dump_text(f"{root}/ReadMe.md", readmemd)

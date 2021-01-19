@@ -5,13 +5,13 @@ path = "src/usage.rs"
 [package]
 name = "example"
 version = "0.1.0"
-authors = [ "Joe Doe <joedoe@gmail.com>",]
+authors = [ "hyperchessbot <hyperchessbot@gmail.com>",]
 edition = "2018"
 keywords = [ "crate", "example",]
 description = "Crate example."
 license = "MIT"
-repository = "https://github.com/joedoe/example"
-homepage = "https://github.com/joedoe/example#example"
+repository = "https://github.com/hyperchessbot/example"
+homepage = "https://github.com/hyperchessbot/example#example"
 documentation = "https://docs.rs/example/0.1.0"
 readme = "ReadMe.md"
 
