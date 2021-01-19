@@ -4,6 +4,8 @@ import os
 import json
 import subprocess
 from shutil import copyfile
+import datetime
+import string
 
 def create_dirs(path):
   try:
@@ -24,6 +26,10 @@ def dump_json(path, obj):
 def dump_text(path, text):
   with open(path, 'w') as f:
     f.write(text)
+
+def read_text(path):
+  with open(path) as f:
+    return f.read()
 
 create_dirs("generated")
 
@@ -78,15 +84,16 @@ for filepath in glob.iglob('crates/*.toml'):
     "documentation": documentation,
     "readme": readme,
   }
-  bbin = all_config.get("bin", [{
-    "name": "usage",
-    "path": "src/usage.rs"
-  }])  
-  dependencies = all_config.get("dependencies", {"dotenv": "0.15.0", "log": "0.4.11"})
+  bbin = all_config.get("bin", [{"name": "usage"}, {"name": "advanced"}])  
+  for cbin in bbin:
+    cbin["title"] = cbin.get("title", string.capwords(cbin['name']))
+    cbin["path"] = cbin.get("path", f"src/{cbin['name']}.rs")
+  print("bbin", bbin)
+  dependencies = all_config.get("dependencies", {"dotenv": "0.15.0", "log": "0.4.11", "env_logger": "0.8.2"})
   cargo_toml = {
     "package": package,    
     "dependencies": dependencies,
-    "bin": bbin,
+    "bin": [{"name": cbin["name"], "path": cbin["path"]} for cbin in bbin],
     "lib": {"path": "src/lib.rs"}
   }
   print(cargo_toml)  
@@ -138,7 +145,15 @@ git commit -m "$*"
   p.wait()
   print("copying license")
   copyfile(f"licenses/{license}", f"{root}/LICENSE")
+  if license == "MIT":
+    mit = read_text("licenses/MIT")
+    cr = " , ".join([f"@{author['name']}" for author in authors])
+    mit = f"Copyright {datetime.datetime.now().year} {cr}\n" + mit
+    dump_text(f"{root}/LICENSE", mit)
   badges = f"[![documentation](https://docs.rs/{name}/badge.svg)](https://docs.rs/{name}) [![Crates.io](https://img.shields.io/crates/v/{name}.svg)](https://crates.io/crates/{name}) [![Crates.io (recent)](https://img.shields.io/crates/dr/{name})](https://crates.io/crates/{name})\n\n"
-  readmemd = badges + f"# {name}\n{name}"
+  readmemd = badges + f"# {name}\n{description}"
   print("writing readme")
   dump_text(f"{root}/ReadMe.md", readmemd)
+  cargo_toml["bin"] = bbin
+  conf_json = json.dumps(cargo_toml, indent=2)
+  dump_text(f"{script_root}/gen.py", f"config = {conf_json}\n\n" + read_text("gen.py"))
