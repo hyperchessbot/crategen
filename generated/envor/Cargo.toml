@@ -18,6 +18,7 @@ repository = "https://github.com/hyperchessbot/envor"
 homepage = "https://github.com/hyperchessbot/envor#envor"
 documentation = "https://docs.rs/envor/0.1.0"
 readme = "ReadMe.md"
+default-run = "usage"
 
 [dependencies]
 dotenv = "0.15.0"

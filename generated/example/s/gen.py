@@ -15,7 +15,8 @@ config = {
     "repository": "https://github.com/hyperchessbot/example",
     "homepage": "https://github.com/hyperchessbot/example#example",
     "documentation": "https://docs.rs/example/0.1.0",
-    "readme": "ReadMe.md"
+    "readme": "ReadMe.md",
+    "default-run": "usage"
   },
   "dependencies": {
     "dotenv": "0.15.0",

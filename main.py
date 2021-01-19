@@ -85,6 +85,7 @@ for filepath in glob.iglob('crates/*.toml'):
     cbin["title"] = cbin.get("title", string.capwords(cbin['name']))
     cbin["path"] = cbin.get("path", f"src/{cbin['name']}.rs")  
   dependencies = all_config.get("dependencies", {"dotenv": "0.15.0", "log": "0.4.11", "env_logger": "0.8.2"})
+  package["default-run"] = bbin[0]["name"]
   cargo_toml = {
     "package": package,    
     "dependencies": dependencies,
