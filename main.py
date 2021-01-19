@@ -101,11 +101,11 @@ for filepath in glob.iglob('crates/*.toml'):
   src_root = f"{root}/src"
   create_dirs(src_root)
   print(src_root)
-  dump_text(f"{src_root}/lib.rs", f"\npub mod {name};\n")
+  dump_text(f"{src_root}/lib.rs", f"\n// lib\n\npub mod {name};\n")
   dump_text(f"{src_root}/{name}.rs", f"#[derive(Debug)]\npub struct Foo{{}}")
   for cbin in bbin:
     bin_name = cbin["name"]
-    dump_text(f"{src_root}/{bin_name}.rs", f'use {name}::{name}::*;\n\nfn main(){{\n\tprintln!("{bin_name} {{:?}}", Foo{{}});\n}}')
+    dump_text(f"{src_root}/{bin_name}.rs", f'use {name}::{name}::*;\n\nfn main(){{\n\tprintln!("{bin_name} {{:?}}", Foo{{}});\n}}\n')
   print("creating git")
   p = subprocess.Popen(["git", "init"], cwd=root)
   p.wait()
@@ -140,6 +140,7 @@ git commit -m "$*"
 """
   for vcs in vcss:
     p = p + f"git push {vcs['type']} master\n\n"
+  p = "python s/gen.py\n\n" + p
   dump_text(f"{script_root}/p", p)
   p = subprocess.Popen(["chmod", "+x", f"p"], cwd=script_root)
   p.wait()
@@ -151,9 +152,10 @@ git commit -m "$*"
     mit = f"Copyright {datetime.datetime.now().year} {cr}\n" + mit
     dump_text(f"{root}/LICENSE", mit)
   badges = f"[![documentation](https://docs.rs/{name}/badge.svg)](https://docs.rs/{name}) [![Crates.io](https://img.shields.io/crates/v/{name}.svg)](https://crates.io/crates/{name}) [![Crates.io (recent)](https://img.shields.io/crates/dr/{name})](https://crates.io/crates/{name})\n\n"
-  readmemd = badges + f"# {name}\n{description}"
+  readmemd = badges + f"# {name}\n\n{description}"
   print("writing readme")
   dump_text(f"{root}/ReadMe.md", readmemd)
+  dump_text(f"{script_root}/ReadMe.md", readmemd)
   cargo_toml["bin"] = bbin
   conf_json = json.dumps(cargo_toml, indent=2)
   dump_text(f"{script_root}/gen.py", f"config = {conf_json}\n\n" + read_text("gen.py"))
