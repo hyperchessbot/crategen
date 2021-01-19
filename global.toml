@@ -1,0 +1,13 @@
+[[author]]
+name = "hyperchessbot"
+email = "hyperchessbot@gmail.com"
+
+[[vcs]]
+type = "github"
+username = "hyperchessbot"
+useremail = "hyperchessbot@gmail.com"
+
+[[vcs]]
+type = "gitlab"
+username = "hyperchessbotauthor"
+useremail = "hyperchessbotauthor@gmail.com"
