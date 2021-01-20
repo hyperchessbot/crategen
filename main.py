@@ -134,6 +134,7 @@ git commit -m "$*"
     p = p + f"git push {vcs['type']} master\n\n"
   p = "python s/gen.py\n\n" + p
   dump_text(f"{script_root}/p", p)
+  dump_text(f"{script_root}/p.bat", p)
   p = subprocess.Popen(["chmod", "+x", f"p"], cwd=script_root)
   p.wait()  
   copyfile(f"licenses/{license}", f"{root}/LICENSE")
@@ -149,4 +150,5 @@ git commit -m "$*"
   cargo_toml["bin"] = bbin
   conf_json = json.dumps(cargo_toml, indent=2)
   dump_text(f"{script_root}/gen.py", f"config = {conf_json}\n\n" + read_text("gen.py"))
+  copyfile(f".gitignore", f"{root}/.gitignore")
   print("done", name)

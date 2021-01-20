@@ -57,7 +57,7 @@ docexamples = []
 mdexamples = []
 for cbin in config["bin"]:  
   code = read_text(cbin["path"])
-  docexamples.append("//!\n//!```\n" + decorate(code, "//!") + "```\n//!\n") 
+  docexamples.append(f"//!\n//! ## {cbin['title']}\n//!\n//!```\n" + decorate(code, "//!") + "```\n//!\n") 
   mdexamples.append(f"# {cbin['title']}\n\n```rust\n" + code + "```\n") 
 docexamples = "//!\n//!\n//! # Examples\n//!\n" + "".join(docexamples)
 mdexamples = "\n".join(mdexamples)

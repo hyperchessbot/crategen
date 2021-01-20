@@ -3,3 +3,31 @@
 # example
 
 Crate example.
+
+# Usage
+
+```rust
+use example::example::*;
+
+fn main(){
+	println!("usage {:?}", Foo{});
+}
+```
+
+# Advanced
+
+```rust
+use example::example::*;
+
+fn main(){
+	println!("advanced {:?}", Foo{});
+}
+```
+
+# Logging
+
+```bash
+export RUST_LOG=info
+# or
+export RUST_LOG=debug
+```
